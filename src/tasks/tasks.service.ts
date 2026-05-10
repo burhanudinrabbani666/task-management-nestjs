@@ -71,12 +71,8 @@ export class TasksService {
     return;
   }
 
-  public updateTaskByid(id: string, newStatus: TaskStatus): Task | string {
+  public updateTaskByid(id: string, newStatus: TaskStatus): Task {
     const task = this.getTaskById(id);
-    if (!task) {
-      return 'Task Not Found!';
-    }
-
     task.status = newStatus;
     return task;
   }
