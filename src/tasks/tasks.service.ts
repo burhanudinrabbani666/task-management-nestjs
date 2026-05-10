@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Task, TaskStatus } from './task.model';
 import { v4 as uuid } from 'uuid';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { GetTaskFilterDto } from './dto/get-task-filter.dto';
 
 @Injectable()
 export class TasksService {
@@ -15,6 +16,31 @@ export class TasksService {
     const task = this.tasks.find((task) => task.id === id);
     if (!task) return undefined;
     return task;
+  }
+
+  public getTasksWithFilter(filterDto: GetTaskFilterDto): Task[] {
+    const { status, search } = filterDto;
+    // Define a temporary
+    let tasks = this.getAllTasks();
+
+    // 1. status
+    if (status) {
+      // ........
+      tasks = tasks.filter((task) => task.status === status);
+    }
+
+    // 2.search
+    if (search) {
+      tasks = tasks.filter((task) => {
+        if (task.title.includes(search) || task.description.includes(search)) {
+          return true;
+        }
+        return false;
+      });
+    }
+
+    // Return filtered Tasks
+    return tasks;
   }
 
   public createTask(createTaskDto: CreateTaskDto): Task {
@@ -48,27 +74,13 @@ export class TasksService {
     };
   }
 
-  public updateTaskByid(id: string, newStatus: string): Task | string {
-    const isValid = Object.values(TaskStatus).includes(newStatus as TaskStatus);
-    if (!isValid) {
-      return 'status not valid. should be:  OPEN or IN_PROGRESS or DONE';
-    }
-
-    const task = this.tasks.find((task) => task.id === id);
+  public updateTaskByid(id: string, newStatus: TaskStatus): Task | string {
+    const task = this.getTaskById(id);
     if (!task) {
-      return 'Task Not Found';
+      return 'Task Not Found!';
     }
 
-    const newTaskStatus: TaskStatus = newStatus.toUpperCase() as TaskStatus;
-    const updatedTask: Task = {
-      ...task,
-      status: newTaskStatus,
-    };
-
-    this.tasks = this.tasks.map((task) =>
-      task.id === updatedTask.id ? updatedTask : task,
-    );
-
-    return updatedTask;
+    task.status = newStatus;
+    return task;
   }
 }
