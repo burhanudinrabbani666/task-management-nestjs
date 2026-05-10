@@ -61,22 +61,14 @@ export class TasksService {
     return task;
   }
 
-  public deleteTaskById(id: string): object {
+  public deleteTaskById(id: string) {
     const newTasks = this.tasks.filter((task) => task.id != id);
     if (newTasks.length === this.tasks.length) {
-      return {
-        statusCode: 404,
-        error: 'TASK NOT FOUND',
-        data: {},
-      };
+      throw new NotFoundException(`Task with ${id} not found`);
     }
 
     this.tasks = newTasks;
-    return {
-      code: 200,
-      status: 'SUCCESS DELETE TASK',
-      data: {},
-    };
+    return;
   }
 
   public updateTaskByid(id: string, newStatus: TaskStatus): Task | string {
