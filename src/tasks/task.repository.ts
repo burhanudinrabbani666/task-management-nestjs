@@ -87,8 +87,6 @@ export class TaskRepository extends Repository<Task> {
       .andWhere('"userId" = :userId', { userId: user.id })
       .execute();
 
-    console.log(result);
-
     if (result.affected === 0) {
       throw new NotFoundException(`Task with ${id} not found.`);
     }
