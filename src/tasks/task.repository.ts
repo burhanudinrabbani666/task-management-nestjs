@@ -64,12 +64,15 @@ export class TaskRepository extends Repository<Task> {
     return task;
   }
 
-  public async deleteTaskById(id: string): Promise<void> {
+  public async deleteTaskById(id: string, user: User): Promise<void> {
     const result = await this.createQueryBuilder()
       .delete()
       .from(Task)
       .where('id = :id', { id })
+      .andWhere('"userId" = :userId', { userId: user.id })
       .execute();
+
+    console.log(result);
 
     if (result.affected === 0) {
       throw new NotFoundException(`Task with ${id} not found.`);

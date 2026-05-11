@@ -22,8 +22,8 @@ export class TasksService {
     return this.taskRepository.createTask(createTaskDto, user);
   }
 
-  public deleteTaskById(id: string): Promise<void> {
-    return this.taskRepository.deleteTaskById(id);
+  public deleteTaskById(id: string, user: User): Promise<void> {
+    return this.taskRepository.deleteTaskById(id, user);
   }
 
   public async updateTaskById(
