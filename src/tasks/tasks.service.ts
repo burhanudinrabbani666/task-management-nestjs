@@ -18,4 +18,8 @@ export class TasksService {
   public createTask(createTaskDto: CreateTaskDto): Promise<Task> {
     return this.taskRepository.createTask(createTaskDto);
   }
+
+  public deleteTaskById(id: string): Promise<void> {
+    return this.taskRepository.deleteTaskById(id);
+  }
 }
