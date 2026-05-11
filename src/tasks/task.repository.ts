@@ -11,12 +11,19 @@ export class TaskRepository extends Repository<Task> {
     super(Task, dataSource.createEntityManager());
   }
 
-  public async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
-    const { title, description } = createTaskDto;
+  public async getTaskById(id: string): Promise<Task> {
+    const task = await this.findOne({ where: { id } });
 
+    if (!task) {
+      throw new NotFoundException(`Task with ID ${id} not found.`);
+    }
+    return task;
+  }
+
+  public async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
     const task = this.create({
-      title,
-      description,
+      title: createTaskDto.title,
+      description: createTaskDto.description,
       status: TaskStatus.OPEN,
     });
 
@@ -34,5 +41,13 @@ export class TaskRepository extends Repository<Task> {
     if (result.affected === 0) {
       throw new NotFoundException(`Task with ${id} not found.`);
     }
+  }
+
+  public async updateTaskById(id: string, status: TaskStatus): Promise<Task> {
+    const task = await this.getTaskById(id);
+    task.status = status;
+
+    await this.save(task);
+    return task;
   }
 }
