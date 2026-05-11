@@ -13,6 +13,6 @@ export class User {
   password!: string;
 
   // One to many
-  @OneToMany(() => Task, (task) => task.user, { eager: true }) // Auto fetch Task
+  @OneToMany((_type) => Task, (task) => task.user, { eager: true }) // Auto fetch Task
   tasks?: Task[];
 }
