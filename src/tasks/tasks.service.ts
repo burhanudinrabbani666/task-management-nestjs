@@ -17,7 +17,7 @@ export class TasksService {
     const taskFound = this.tasks.find((task) => task.id === id);
 
     if (!taskFound) {
-      throw new NotFoundException(`Task with ${id} not found!`);
+      throw new NotFoundException(`Task with ${id} not found!`); // <--- This thrown to global pipes
     }
 
     return taskFound;
@@ -25,16 +25,13 @@ export class TasksService {
 
   public getTasksWithFilter(filterDto: GetTaskFilterDto): Task[] {
     const { status, search } = filterDto;
-    // Define a temporary
     let tasks = this.getAllTasks();
 
-    // 1. status
     if (status) {
       // ........
       tasks = tasks.filter((task) => task.status === status);
     }
 
-    // 2.search
     if (search) {
       tasks = tasks.filter((task) => {
         if (task.title.includes(search) || task.description.includes(search)) {
@@ -44,7 +41,6 @@ export class TasksService {
       });
     }
 
-    // Return filtered Tasks
     return tasks;
   }
 
@@ -62,7 +58,7 @@ export class TasksService {
   }
 
   public deleteTaskById(id: string) {
-    const newTasks = this.tasks.filter((task) => task.id != id);
+    const newTasks = this.tasks.filter((task) => task.id !== id);
     if (newTasks.length === this.tasks.length) {
       throw new NotFoundException(`Task with ${id} not found`);
     }
@@ -71,7 +67,7 @@ export class TasksService {
     return;
   }
 
-  public updateTaskByid(id: string, newStatus: TaskStatus): Task {
+  public updateTaskStatusById(id: string, newStatus: TaskStatus): Task {
     const task = this.getTaskById(id);
     task.status = newStatus;
     return task;

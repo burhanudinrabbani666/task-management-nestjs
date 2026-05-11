@@ -30,7 +30,6 @@ export class TasksController {
   @Get('/:id')
   getTaskById(@Param('id') id: string): Task | string {
     const task = this.tasksService.getTaskById(id);
-    if (!task) return 'Task Not Found';
     return task;
   }
 
@@ -48,9 +47,8 @@ export class TasksController {
   updateTaskStatus(
     @Param('id') id: string,
     @Body() updateTaskStatusDto: UpdateTaskStatusDto,
-  ): Task | string {
+  ): Task {
     const { status } = updateTaskStatusDto;
-
-    return this.tasksService.updateTaskByid(id, status);
+    return this.tasksService.updateTaskStatusById(id, status);
   }
 }
